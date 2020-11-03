@@ -1,35 +1,45 @@
+from flask import request
 from flask import Flask
+from flask_cors import CORS
+from pymongo import MongoClient
+import uuid
 import json
 app = Flask(__name__)
+CORS(app)
 
 
-# The following variable store users
-users = [
-    {
-        "id": 1,
-        "username": "billtou",
-        "email": "bill@uot.gr",
-        "name": "Bill",
-        "surname": "Toulias",
-        "birthdate": 1992,
-        "roles": ["student"],
-        "department": "Computer Science",
-        "school": "Engineering",
-        "university": "University of thessaly"
-    },
-    {
-        "id": 2,
-        "username": "iatr",
-        "email": "iatrelis@uot.gr",
-        "name": "Omiros",
-        "surname": "Iatrelis",
-        "birthdate": 1970,
-        "roles": ["professor"],
-        "department": "Computer Science",
-        "school": "Engineering",
-        "university": "University of thessaly"
-    }
-]
+db_connection = MongoClient()
+db = db_connection.get_database("final-project")
+db_users = db.get_collection("users")
+
+
+# # The following variable store users
+# users = [
+#     {
+#         "id": 1,
+#         "username": "billtou",
+#         "email": "bill@uot.gr",
+#         "name": "Bill",
+#         "surname": "Toulias",
+#         "birthdate": 1992,
+#         "roles": ["student"],
+#         "department": "Computer Science",
+#         "school": "Engineering",
+#         "university": "University of thessaly"
+#     },
+#     {
+#         "id": 2,
+#         "username": "iatr",
+#         "email": "iatrelis@uot.gr",
+#         "name": "Omiros",
+#         "surname": "Iatrelis",
+#         "birthdate": 1970,
+#         "roles": ["professor"],
+#         "department": "Computer Science",
+#         "school": "Engineering",
+#         "university": "University of thessaly"
+#     }
+# ]
 
 # The following variable stores projects
 projects = [
@@ -98,4 +108,69 @@ def get_project_by_professor(pname):
 
 @app.route("/api/users")
 def get_users():
+    # now we will return users directly from the database instead
+    # of using a local variable with lists
+    users = []
+    results = db_users.find({},{"_id":0})
+
+    for result in results:
+        users.append(result)
+
     return json.dumps(users, indent=4)
+
+@app.route("/api/users", methods=["POST"])
+def create_user():
+    # we use a special request object given by flask library which 
+    # contains data that come along with the post request
+
+    user_new = request.json
+    # user_new has the information given for the new user to be created
+    # however we will override the "id" field and assign automatically
+    # a uuid generate by python's uuid system library
+    user_new["id"] = str(uuid.uuid1())
+
+    db_users.insert_one(user_new)
+    return '{"message": "user with id: ' + user_new["id"] + ' created succesfully"}'
+
+@app.route("/api/users/<uid>")
+def get_user_by_id(uid):
+    # now we will return a user by it's id directly from the database instead
+    # of using a local variable with lists
+    users = []
+
+    results = db_users.find({"id":uid},{"_id":0})
+
+    for result in results:
+        users.append(result)
+
+    return json.dumps(users, indent=4)
+
+@app.route("/api/users/<uid>", methods=["PUT"])
+def update_user_by_id(uid):
+    user_update = request.json
+    # ensure that the user's uuid remains the same as before
+    user_update["id"] = uid
+    result = db_users.replace_one({"id":uid},user_update)
+    if result.modified_count > 0: 
+        return '{"message":"User updated succesfully"}'
+    else:
+        return '{"message":"Nothing to update"}'
+
+@app.route("/api/users/<uid>", methods=["DELETE"])
+def delete_user_by_id(uid):
+
+    result = db_users.delete_one({"id":uid})
+    if result.deleted_count > 0: 
+        return '{"message":"User deleted succesfully"}'
+    else:
+        return '{"message":"Nothing to delete"}'
+
+# very dangerous operation delete all users
+# will be removed later
+@app.route("/api/users", methods=["DELETE"])
+def delete_all_users():
+    result = db_users.delete_many({})
+    if result.deleted_count > 0: 
+        return '{"message":"All users deleted!"}'
+    else:
+        return '{"message":"Nothing to delete"}'
