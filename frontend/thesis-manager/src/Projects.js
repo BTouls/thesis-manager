@@ -30,7 +30,8 @@ function Projects(){
   
     return (
       <div className="App">
-      <h2>Available projects:</h2>
+      <h3>Available projects:</h3>
+      
         <div>
           {projects}  
         </div>
@@ -42,17 +43,17 @@ function Projects(){
     let tags = []
   
     for (let item of props.tags){
-      tags.push(<span className="tag">{item}</span>)
+      tags.push(<span className="badge badge-success mr-2">{item}</span>)
     }
   
-    return (<div className="tag-holder">{tags}</div>)
+    return (<h5>{tags}</h5>)
   }
   
   function Required(props){
     let less = []
   
     for (let item of props.lessons){
-      less.push(<span className="lesson">{item}</span>)
+      less.push(<span className="badge badge-secondary mr-2">{item}</span>)
     }
   
     return (<span>{less}</span>)
@@ -60,22 +61,30 @@ function Projects(){
   
   function Project(props){
     return (
-      <div className="Project">
-        <div className="date"><span>{props.date}</span></div>
-        <h3>📚 {props.title}</h3>
-        <hr/>
-        <strong>Description:</strong>
-        <p>{props.description}</p>
-        <strong>professor: </strong>{props.professor}
-        <br />
-        <strong>university: </strong>{props.university}
-        <br/>
-        <strong>department: </strong>{props.dep}
-        <br/>
-        <strong>required lessons: </strong><Required lessons={props.lessons} />
-        <hr/>
-      
-        <Tags tags={props.tags} />
+      <div className="card mb-4">
+        <div className="card-header">
+          <div className="date"><code>{props.date}</code></div>
+          <h3>📚 {props.title}</h3>
+        </div>
+
+        <div className="card-body">
+          <strong>Description:</strong>
+          <p>{props.description}</p>
+          <strong>professor: </strong>{props.professor}
+          <br />
+          <strong>university: </strong>{props.university}
+          <br/>
+          <strong>department: </strong>{props.dep}
+          <br/>
+          <strong>required lessons: </strong><Required lessons={props.lessons} />
+        </div>
+        
+        <div className="card-footer">
+          <Tags tags={props.tags} />
+        </div>
+        
+        
+        
         
       </div>
     )

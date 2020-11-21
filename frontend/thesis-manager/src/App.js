@@ -4,13 +4,14 @@ import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom"
 import Projects from './Projects'
 import Users from './Users'
 import About from './About'
+import CreateUser from './CreateUser';
 
 function App() {
 
  return (
    <Router>
    <div>
-     <nav>
+     <nav className="navbar">
        <span class="nav-title">Thesis Manager</span> 
        <Link to="/projects">Projects</Link>
        <Link to="/users">Users</Link>
@@ -22,6 +23,9 @@ function App() {
        </Route>
        <Route path="/users">
          <Users/>
+       </Route>
+       <Route path="/create_user">
+         <CreateUser/>
        </Route>
        <Route path="/about">
          <About />
