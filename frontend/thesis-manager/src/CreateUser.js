@@ -13,16 +13,18 @@ function CreateUser(){
         <Formik
       initialValues={{
         username: '',
-        firstName: '',
-        surnameame: '',
+        name: '',
+        surname: '',
         email: '',
         department: '',
         university: '',
-        birthdate: ''
+        school: '',
+        birthdate: '',
+        formRole: '',
       }}
       onSubmit={async (values) => {
       
-        values["roles"] = ["student"];
+        values["roles"] = [values["formRole"]];
         let input = JSON.stringify(values, null, 2);
         
         axios.post("http://127.0.0.1:5000/api/users",input,{headers:{'Content-Type':'Application/Json'}});
@@ -31,36 +33,79 @@ function CreateUser(){
     >
       {({ isSubmitting }) => (
         <Form>
-        <label htmlFor="username">Username: </label>
-          <Field name="username" placeholder="Jane" />
-         <br/>
-          <label htmlFor="firstName">First Name: </label>
-          <Field name="firstName" placeholder="Jane" />
-          <br/>
-          <label htmlFor="surname">Surname: </label>
-          <Field name="surname" placeholder="Doe" />
-          <br/>
-          <label htmlFor="department">Department: </label>
-          <Field name="department" placeholder="Physics" />
-          <br/>
-          <label htmlFor="email">Email: </label>
-          <Field name="email" placeholder="jane@acme.com" type="email" />
-          <br/>
-          <label htmlFor="school">School: </label>
-          <Field name="school" placeholder="Physics" />
-          <br/>
-          <label htmlFor="university">University: </label>
-          <Field name="university" placeholder="Physics" />
-          <br/>
+
+          <div className="form-group">
+            <label htmlFor="formRole">Role: </label>
+             <Field className="form-control" as="select" name="formRole">  
+             <option value="student">Student</option>
+             <option value="professor">Professor</option>
+           </Field>
+          </div>
+         
+                   
+          <div className="form-group">
+            <label htmlFor="name">First name: </label>
+            <Field className="form-control" name="name" placeholder="Jane" />
+          </div>
+         
+          <div className="form-group">
+            <label htmlFor="surname">Surname: </label>
+            <Field className="form-control" name="surname" placeholder="Doe" />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="username">Username: </label>
+            <Field className="form-control" name="username" placeholder="Jane" />
+          </div>
+
+
+          <div className="form-group">
+            <label htmlFor="email">Email: </label>
+            <Field className="form-control" name="email" placeholder="jane@acme.com" type="email" />
+            <small id="emailHelp" className="form-text text-muted">Please enter a valid academic email</small>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="university">University: </label>
+            <Field className="form-control" name="university" placeholder="Physics" />
+            <small id="universityHelp" className="form-text text-muted">Please enter the full 
+            official name of your university</small>
+          </div>
+          
+          
+        
+          <div className="form-group">
+            <label htmlFor="department">Department: </label>
+            <Field className="form-control" name="department" placeholder="Physics" />
+            <small id="departmentHelp" className="form-text text-muted">Please enter the name 
+            of the department in your university that you are a member of</small>
+          </div>
+          
+         
+         
+         
+          <div className="form-group">
+            <label htmlFor="school">School: </label>
+            <Field className="form-control" name="school" placeholder="Physics" />
+            <small id="schoolHelp" className="form-text text-muted">Please enter the name 
+            of the school in your university that you are a member of</small>
+            
+          </div>
+         
+        
+         
+          
+         
           <button className="btn btn-success" type="submit" disabled={isSubmitting}>
             Submit
           </button>
+          <Link className="btn btn-secondary ml-3" to="/users">Back</Link>
         </Form>
       )}
     </Formik>
      
-     <br/>
-                <Link className="btn btn-secondary" to="/users">Back</Link>
+     
+                
            
         </div>
     )

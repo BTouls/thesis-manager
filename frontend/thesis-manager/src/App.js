@@ -12,7 +12,7 @@ function App() {
    <Router>
    <div>
      <nav className="navbar">
-       <span class="nav-title">Thesis Manager</span> 
+       <span className="nav-title">Thesis Manager</span> 
        <Link to="/projects">Projects</Link>
        <Link to="/users">Users</Link>
        <Link to="/about">About</Link>

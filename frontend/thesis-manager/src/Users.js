@@ -2,8 +2,32 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Link} from "react-router-dom"
 
+function handleDelete(props) {
+ 
+ 
+  let answer = window.confirm("are you sure you wanna delete user: " + props.username + " ?");
+  if (answer === true) {
+    // do some stuff to actually delete the item from api
+   
+
+    
+    console.log("to be deleted...")
+    axios.delete("http://127.0.0.1:5000/api/users/"+props.id).then(res =>
+    {
+      alert(res.data["message"]);
+      window.location.reload();
+    });
+    
+    
+  }
+
+  // or else we dont need to do anything at all
+}
 
 function Users(){
+
+
+ 
 
     const [data, setData] = useState([])
 
@@ -13,12 +37,18 @@ function Users(){
   
       setData(result.data);
     
-    });
+    },[]);
+
+
+
   
     let users = [];
     for (let item of data) {
       users.push(
-        <User username={item.username}
+        <User 
+          id = {item.id}
+          key={item.id}
+          username={item.username}
           name={item.name}
           surname={item.surname} 
           school={item.school}
@@ -46,10 +76,10 @@ function Users(){
     for (let role of props.roles) {
       // This needs to be changed to only student
       if (role === "student" || role === "students"){
-        roleIcons.push(<span className="role-icon">🎓</span>);
+        roleIcons.push(<span key={role} className="role-icon">🎓</span>);
       }
       if (role === "professor"){
-        roleIcons.push(<span className="role-icon">👨‍🏫</span>);
+        roleIcons.push(<span key={role} className="role-icon">👨‍🏫</span>);
       }
     }
 
@@ -60,7 +90,16 @@ function Users(){
     return (
       <div className="card mb-5">
         <div className="card-header">
-        <h3><Roles roles={props.roles}/> {props.username}</h3>
+          <div className="row">
+            <div className="col-10">
+            <h3><Roles roles={props.roles}/> {props.username}</h3>
+            </div>
+            <div className="col-2 text-right">
+              <button className="btn btn-danger" onClick={() => {handleDelete(props)}}>Delete</button>
+            </div>
+          </div>
+       
+       
         </div>
         <div className="card-body">
         <strong>full name: </strong>{props.name} {props.surname}

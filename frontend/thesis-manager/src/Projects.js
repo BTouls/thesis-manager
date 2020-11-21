@@ -11,12 +11,14 @@ function Projects(){
   
       setData(result.data);
     
-    });
+    },[]);
   
     let projects = [];
     for (let item of data) {
       projects.push(
-        <Project title={item.title}
+        <Project 
+          key = {item.id}
+          title={item.title}
           description={item.abstract}
           professor={item.professor} 
           dep={item.department}
@@ -43,7 +45,7 @@ function Projects(){
     let tags = []
   
     for (let item of props.tags){
-      tags.push(<span className="badge badge-success mr-2">{item}</span>)
+      tags.push(<span key={item} className="badge badge-success mr-2">{item}</span>)
     }
   
     return (<h5>{tags}</h5>)
@@ -53,7 +55,7 @@ function Projects(){
     let less = []
   
     for (let item of props.lessons){
-      less.push(<span className="badge badge-secondary mr-2">{item}</span>)
+      less.push(<span key={item} className="badge badge-secondary mr-2">{item}</span>)
     }
   
     return (<span>{less}</span>)
