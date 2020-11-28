@@ -5,6 +5,7 @@ import Projects from './Projects'
 import Users from './Users'
 import About from './About'
 import CreateUser from './CreateUser';
+import CreateProject from './CreateProject'
 
 function App() {
 
@@ -26,6 +27,9 @@ function App() {
        </Route>
        <Route path="/create_user">
          <CreateUser/>
+       </Route>
+       <Route path="/create_project">
+         <CreateProject/>
        </Route>
        <Route path="/about">
          <About />

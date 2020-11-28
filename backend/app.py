@@ -4,6 +4,7 @@ from flask_cors import CORS
 from pymongo import MongoClient
 import uuid
 import json
+from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
@@ -121,6 +122,47 @@ def get_project_by_id(pid):
         projects.append(result)
 
     return json.dumps(projects, indent=4)
+
+@app.route("/api/projects/<pid>/apply/<uid>", methods=["POST"])
+def apply_for_project(pid, uid):
+    
+    project =  db_projects.find_one({"id":pid},{"_id":0})
+    user = db_users.find_one({"id":uid},{"_id":0})
+
+    # if no project found return error message
+    if project is None:
+        return json.dumps({'message':'No project found!'},indent=4),404
+    # if no such user found return error message
+    if user is None:
+        return json.dumps({'message':'No user found!'},indent=4),404
+
+    # if project found but has not status unassigned it means
+    # that the project is assigned so we cannot apply for that 
+    # thus return an error message
+    if project["status"] != "unassigned":
+         return json.dumps({'message':'Project is already assigned: ' + project["status"] },indent=4),409
+
+
+    # add a new field to the project named applicants which is a list
+    # with students interested to apply for the specific project
+    applicant = {}
+    applicant["id"] = user["id"]
+    applicant["username"] = user["username"]
+    applicant["name"] = user["name"] + " " + user ["surname"]
+    applicant["date"] = datetime.today().strftime("%Y/%m/%d")
+    if "applicants" not in project:
+        project["applicants"] = [applicant]
+    else:
+        project["applicants"].append(applicant)
+
+    result = db_projects.replace_one({"id":pid},project)
+    if result.modified_count > 0: 
+        return '{"message":"Application succesfull for project"}'
+    else:
+        return '{"message":"Application failed for project"}'
+
+    
+
 
 @app.route("/api/projects/<pid>", methods=["PUT"])
 def update_project_by_id(pid):

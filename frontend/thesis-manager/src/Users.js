@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Link} from "react-router-dom"
 
+
 function handleDelete(props) {
  
  
@@ -31,11 +32,14 @@ function Users(){
 
     const [data, setData] = useState([])
 
-    useEffect( async () => {
+    useEffect( () => {
       
-      const result = await axios("http://127.0.0.1:5000/api/users");
-  
-      setData(result.data);
+      async function getData(){
+        const result = await axios("http://127.0.0.1:5000/api/users");
+        setData(result.data);
+      }
+
+      getData();
     
     },[]);
 
