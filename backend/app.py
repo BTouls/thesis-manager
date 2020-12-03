@@ -1,3 +1,6 @@
+
+import os
+from hashlib import sha256
 from flask import request
 from flask import Flask
 from flask_cors import CORS
@@ -14,79 +17,27 @@ db = db_connection.get_database("final-project")
 db_users = db.get_collection("users")
 db_projects = db.get_collection("projects")
 
-# # The following variable store users
-# users = [
-#     {
-#         "id": 1,
-#         "username": "billtou",
-#         "email": "bill@uot.gr",
-#         "name": "Bill",
-#         "surname": "Toulias",
-#         "birthdate": 1992,
-#         "roles": ["student"],
-#         "department": "Computer Science",
-#         "school": "Engineering",
-#         "university": "University of thessaly"
-#     },
-#     {
-#         "id": 2,
-#         "username": "iatr",
-#         "email": "iatrelis@uot.gr",
-#         "name": "Omiros",
-#         "surname": "Iatrelis",
-#         "birthdate": 1970,
-#         "roles": ["professor"],
-#         "department": "Computer Science",
-#         "school": "Engineering",
-#         "university": "University of thessaly"
-#     }
-# ]
+def authenticate(headers):
+    token = headers.get("x-api-key")
+    user = db_users.find_one({"token":token},{"_id":0})
+    
+    if user == None:
+        return (None, None)
 
-# The following variable stores projects
-# projects = [
-#     {
-#         "id": 1,
-#         "title": "Web application for managing academic projects",
-#         "native_title": "Ylopoihsh efarmoghs gia akadimaikes ergasies",
-#         "abstract": "A summary description of project",
-#         "abstract_native": "Syntomh perilipsi thematos",
-#         "professor": "Iatrelis",
-#         "university": "University of Thessaly",
-#         "school": "Engineering",
-#         "department": "Computer Science",
-#         "tags": ["Computers", "Web", "Applications"],
-#         "number_of_students": 1,
-#         "assigned_on": ["Bill Toulias"],
-#         "status": "preparation",
-#         "required_courses" : ["CS 101", "CS 102", "Web applications"],
-#         "required_knowledge_topics": ["programming", "python", "http", "databases"],
-#         "date": "20/10/2020"
-#     },
-#     {
-#         "id": 2,
-#         "title": "Agro Sensor project with arduino",
-#         "native_title": "Ylopoihsh efarmoghs arduino",
-#         "abstract": "A summary description of project",
-#         "abstract_native": "Syntomh perilipsi thematos",
-#         "professor": "Ventsas",
-#         "university": "University of Thessaly",
-#         "school": "Engineering",
-#         "department": "Electronics",
-#         "tags": ["Programming", "Electronics", "Sensors"],
-#         "number_of_students": 2,
-#         "assigned_on": [],
-#         "status": "unassigned",
-#         "required_courses" : ["Electronics 101", "C", "Math 101"],
-#         "required_knowledge_topics": ["programming", "c", "arduino", "circuits"],
-#         "date": "15/10/2020"
-#     }
-# ]
+    return (user["username"], user["roles"][0])
+
 
 # API CALLS to handle projects
 # ----------------------------
 
 @app.route("/api/projects", methods=["POST"])
 def create_project():
+
+    username, role = authenticate(request.headers)
+    if username == None:
+        return json.dumps({"message":"unauthorized"}), 401
+    if role == "student":
+        return json.dumps({"message":"forbidden"}), 403
     # we use a special request object given by flask library which 
     # contains data that come along with the post request
 
@@ -103,6 +54,11 @@ def create_project():
 
 @app.route("/api/projects")
 def get_projects():
+  
+    username, _ = authenticate(request.headers)
+    if username == None:
+        return json.dumps({"message":"unauthorized"}), 401
+    
     projects = []
 
     results = db_projects.find({},{"_id":0})
@@ -114,6 +70,11 @@ def get_projects():
 
 @app.route("/api/projects/<pid>")
 def get_project_by_id(pid):
+
+    username, _ = authenticate(request.headers)
+    if username == None:
+        return json.dumps({"message":"unauthorized"}), 401
+    
     projects = []
     
     results = db_projects.find({"id":pid},{"_id":0})
@@ -125,6 +86,13 @@ def get_project_by_id(pid):
 
 @app.route("/api/projects/<pid>/apply/<uid>", methods=["POST"])
 def apply_for_project(pid, uid):
+
+    username, role = authenticate(request.headers)
+    if username == None:
+        return json.dumps({"message":"unauthorized"}), 401
+    if role != "student":
+        return json.dumps({"message":"forbidden"}), 403
+
     
     project =  db_projects.find_one({"id":pid},{"_id":0})
     user = db_users.find_one({"id":uid},{"_id":0})
@@ -166,6 +134,14 @@ def apply_for_project(pid, uid):
 
 @app.route("/api/projects/<pid>", methods=["PUT"])
 def update_project_by_id(pid):
+
+    username, role = authenticate(request.headers)
+    if username == None:
+        return json.dumps({"message":"unauthorized"}), 401
+    if role == "student":
+        return json.dumps({"message":"forbidden"}), 403
+
+
     project_update = request.json
     # ensure that the user's uuid remains the same as before
     project_update["id"] = pid
@@ -177,6 +153,12 @@ def update_project_by_id(pid):
 
 @app.route("/api/projects/<pid>", methods=["DELETE"])
 def delete_project_by_id(pid):
+
+    username, role = authenticate(request.headers)
+    if username == None:
+        return json.dumps({"message":"unauthorized"}), 401
+    if role == "student":
+        return json.dumps({"message":"forbidden"}), 403
 
     result = db_projects.delete_one({"id":pid})
     if result.deleted_count > 0: 
@@ -201,6 +183,16 @@ def delete_project_by_id(pid):
 def get_users():
     # now we will return users directly from the database instead
     # of using a local variable with lists
+
+    # read the access token given with the request
+    username, role = authenticate(request.headers)
+    
+    if username == None:
+        return json.dumps({"message":"unauthorized"}), 401
+    if role != "admin":
+        return json.dumps({"message":"forbidden"}), 403
+   
+
     users = []
     results = db_users.find({},{"_id":0})
 
@@ -214,11 +206,25 @@ def create_user():
     # we use a special request object given by flask library which 
     # contains data that come along with the post request
 
+    # read the access token given with the request
+    username, role = authenticate(request.headers)
+    
+    if username == None:
+        return json.dumps({"message":"unauthorized"}), 401
+    if role != "admin":
+        return json.dumps({"message":"forbidden"}), 403
+
     user_new = request.json
     # user_new has the information given for the new user to be created
     # however we will override the "id" field and assign automatically
     # a uuid generate by python's uuid system library
     user_new["id"] = str(uuid.uuid1())
+    # crypto to generate a secure random access token
+    h = sha256()
+    h.update(os.urandom(32))
+    aux = str(h.hexdigest())
+    user_new["token"] = aux
+    user_new["password"] = sha256(user_new["password"]).hexdigest()
 
     db_users.insert_one(user_new)
     return '{"message": "user with id: ' + user_new["id"] + ' created succesfully"}'
@@ -227,6 +233,15 @@ def create_user():
 def get_user_by_id(uid):
     # now we will return a user by it's id directly from the database instead
     # of using a local variable with lists
+
+    # read the access token given with the request
+    username, role = authenticate(request.headers)
+    
+    if username == None:
+        return json.dumps({"message":"unauthorized"}), 401
+    if role != "admin":
+        return json.dumps({"message":"forbidden"}), 403
+
     users = []
 
     results = db_users.find({"id":uid},{"_id":0})
@@ -238,6 +253,15 @@ def get_user_by_id(uid):
 
 @app.route("/api/users/<uid>", methods=["PUT"])
 def update_user_by_id(uid):
+
+    # read the access token given with the request
+    username, role = authenticate(request.headers)
+    
+    if username == None:
+        return json.dumps({"message":"unauthorized"}), 401
+    if role != "admin":
+        return json.dumps({"message":"forbidden"}), 403
+
     user_update = request.json
     # ensure that the user's uuid remains the same as before
     user_update["id"] = uid
@@ -249,6 +273,14 @@ def update_user_by_id(uid):
 
 @app.route("/api/users/<uid>", methods=["DELETE"])
 def delete_user_by_id(uid):
+
+    # read the access token given with the request
+    username, role = authenticate(request.headers)
+    
+    if username == None:
+        return json.dumps({"message":"unauthorized"}), 401
+    if role != "admin":
+        return json.dumps({"message":"forbidden"}), 403
 
     result = db_users.delete_one({"id":uid})
     if result.deleted_count > 0: 
