@@ -13,14 +13,17 @@ function handleDelete(props) {
 
     
     console.log("to be deleted...")
-    axios.delete("http://127.0.0.1:5000/api/users/"+props.id).then(res =>
+    if (window._auth.isLogged()){
+    axios.delete("http://127.0.0.1:5000/api/users/"+props.id,{headers: {'x-api-key':window._auth.getAccessKey()}}).then(res =>
     {
       alert(res.data["message"]);
       window.location.reload();
     });
-    
-    
   }
+}
+  
+    
+  
 
   // or else we dont need to do anything at all
 }
@@ -35,8 +38,13 @@ function Users(){
     useEffect( () => {
       
       async function getData(){
-        const result = await axios("http://127.0.0.1:5000/api/users");
-        setData(result.data);
+        if (window._auth.isLogged()){
+
+          const result = await axios.get("http://127.0.0.1:5000/api/users",{
+            headers: {'x-api-key':window._auth.getAccessKey()}
+          });
+          setData(result.data);
+        }
       }
 
       getData();
@@ -114,6 +122,7 @@ function Users(){
         </div>
       </div>
     )
+
 }
 
 export default Users

@@ -51,8 +51,11 @@ function CreateProject(){
         delete valuesModif.numberOfStudents;
 
         let input = JSON.stringify(valuesModif, null, 2);
+        if (window._auth.isLogged()){
+        axios.post("http://127.0.0.1:5000/api/projects",input,
+        {headers:{'Content-Type':'Application/Json','x-api-key':window._auth.getAccessKey()}});
         
-        axios.post("http://127.0.0.1:5000/api/projects",input,{headers:{'Content-Type':'Application/Json'}});
+        }
         window.history.back()
     }}
     >

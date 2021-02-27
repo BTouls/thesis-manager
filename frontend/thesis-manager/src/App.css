@@ -53,3 +53,8 @@ nav {
   margin-top:10px;
   margin-bottom:10px;
 }
+
+.login-form {
+  width: 300px;
+  margin: auto;
+}

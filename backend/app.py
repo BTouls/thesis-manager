@@ -19,7 +19,12 @@ db_projects = db.get_collection("projects")
 
 def authenticate(headers):
     token = headers.get("x-api-key")
+    
+    if token is None or token == "":
+        return (None, None)
+    
     user = db_users.find_one({"token":token},{"_id":0})
+
     
     if user == None:
         return (None, None)
@@ -27,8 +32,42 @@ def authenticate(headers):
     return (user["username"], user["roles"][0])
 
 
+# API CALLS to handle auth
+# ------------------------
+
 # API CALLS to handle projects
 # ----------------------------
+@app.route("/api/auth", methods=["POST"])
+def auth():
+    auth_details = request.json 
+    username = auth_details["username"]
+    password = auth_details["password"]
+    password_hash = sha256(password).hexdigest()
+
+    # Find if a user with that username and that password_hash exists in database
+
+    user = db_users.find_one({"username":username, "password":password_hash})
+    if user == None:
+        return json.dumps({'message':'Unauthorized: wrong username/password!'},indent=4),401
+
+    return json.dumps({'token':user["token"]},indent=4), 200
+
+@app.route("/api/profile")
+def get_profile():
+    username, role = authenticate(request.headers)
+    if username == None:
+        return json.dumps({"message":"unauthorized"}), 401
+    token = request.headers.get("x-api-key")
+
+    user = db_users.find_one({"username":username, "token":token},{"_id":0,"id":0,"password":0,"token":0})
+    if user == None:
+        return json.dumps({'message': 'error: cannot find user profile'},indent=4),404
+    
+    # remove token and password has info from user dictionary
+   
+    return json.dumps({'profile':user},indent=4),200
+
+
 
 @app.route("/api/projects", methods=["POST"])
 def create_project():

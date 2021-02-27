@@ -13,6 +13,7 @@ function CreateUser(){
         <Formik
       initialValues={{
         username: '',
+        password: '',
         name: '',
         surname: '',
         email: '',
@@ -26,8 +27,12 @@ function CreateUser(){
       
         values["roles"] = [values["formRole"]];
         let input = JSON.stringify(values, null, 2);
+
+        if (window._auth.isLogged()){
+          axios.post("http://127.0.0.1:5000/api/users",input,{headers:{'Content-Type':'Application/Json','x-api-key':window._auth.getAccessKey() }});
+        }
         
-        axios.post("http://127.0.0.1:5000/api/users",input,{headers:{'Content-Type':'Application/Json'}});
+        
         window.history.back()
     }}
     >
@@ -56,6 +61,11 @@ function CreateUser(){
           <div className="form-group">
             <label htmlFor="username">Username: </label>
             <Field className="form-control" name="username" placeholder="Jane" />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password: </label>
+            <Field type="password" className="form-control" name="password"  />
           </div>
 
 
