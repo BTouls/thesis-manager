@@ -32,7 +32,7 @@ function App() {
      onClick={handleClick}
     className="ml-2">Log out</button>
     </span> 
-  }
+  } 
 
  return (
    <Router >

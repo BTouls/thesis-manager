@@ -1,6 +1,14 @@
 import React from 'react';
 
 function About(){
+
+    if (window._auth.isLogged() !== true){
+        window.location = "http://localhost:3000/login"
+        return
+      
+    }
+
+    
     return (
         <div className="App">
             <h3>About thesis manager</h3>

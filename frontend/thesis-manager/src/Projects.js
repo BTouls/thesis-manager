@@ -27,6 +27,8 @@ function handleDelete(props) {
 
 function Projects(){
 
+   
+
     const [data, setData] = useState([])
 
     useEffect( () => {
@@ -46,6 +48,11 @@ function Projects(){
       
     
     },[]);
+
+    if (window._auth.isLogged() !== true){
+      window.location = "http://localhost:3000/login"
+      return
+    }
   
     let projects = [];
     for (let item of data) {
@@ -63,6 +70,7 @@ function Projects(){
           lessons = {item.required_courses}
           topics = {item.required_knowledge_topics}
           status = {item.status}
+          applicants = {item.applicants}
           />
       )
     }
@@ -89,6 +97,22 @@ function Projects(){
     }
   
     return (<h5>{tags}</h5>)
+  }
+
+  function Applicants(props){
+
+    if ( props.applicants === null || props.applicants === undefined) {
+      return "No applicants"
+    }
+
+    let appl = []
+  
+    console.log("$$$$", props.applicants)
+    for (let item of props.applicants){
+      appl.push(<li key={item.username} className=" mr-2"><span className="badge badge-dark mr-2">{item.date}</span> 🎓 {item.username} </li>)
+    }
+  
+    return (<ul>{appl}</ul>)
   }
   
   function Required(props){
@@ -133,6 +157,9 @@ function Projects(){
           <strong>required topics: </strong><Required lessons={props.topics} />
           <hr/>
           <strong>Status: </strong><span>{props.status}</span>
+          <hr/>
+          <strong>Applicants:</strong><br/>
+          <Applicants applicants={props.applicants} />
         </div>
         
         <div className="card-footer">

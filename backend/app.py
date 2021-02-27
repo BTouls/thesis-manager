@@ -123,8 +123,8 @@ def get_project_by_id(pid):
 
     return json.dumps(projects, indent=4)
 
-@app.route("/api/projects/<pid>/apply/<uid>", methods=["POST"])
-def apply_for_project(pid, uid):
+@app.route("/api/projects/<pid>/apply", methods=["POST"])
+def apply_for_project(pid):
 
     username, role = authenticate(request.headers)
     if username == None:
@@ -134,7 +134,7 @@ def apply_for_project(pid, uid):
 
     
     project =  db_projects.find_one({"id":pid},{"_id":0})
-    user = db_users.find_one({"id":uid},{"_id":0})
+    user = db_users.find_one({"username":username},{"_id":0})
 
     # if no project found return error message
     if project is None:

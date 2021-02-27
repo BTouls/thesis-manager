@@ -27,9 +27,29 @@ The API listens and responds to `HTTP` requests
 
 
 
-
-
 _VS code Notes_: To see the markdown result of this page press:  `Ctrl + Shift + V`
 
 
+Application Features
+====================
+
+Done:
+- User Management
+ - List Users
+ - Create User
+ - Update User
+ - Delete User
+- Project Management
+ - List Projects
+ - Create Project
+ - Update Project
+ - Delete Project
+- Auth
+ - Login (User/Roles)
+- Other Tasks
+ - Apply for project (As a user) - Done in backend
+
+TODO:
+- Apply for Project (As a user) - TODO in frontend
+- Accept user applications (As a teacher)
 

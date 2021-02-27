@@ -52,7 +52,10 @@ function Users(){
     },[]);
 
 
-
+    if (window._auth.isLogged() !== true){
+      window.location = "http://localhost:3000/login"
+      return
+    }
   
     let users = [];
     for (let item of data) {
