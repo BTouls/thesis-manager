@@ -1,4 +1,4 @@
-# Thesis-manager 
+# thesis-manager 
 
 This is a project consisting of a python backend and a react javascript front-end implementing a web application for managing thesis topic announcements and assignments on universities.
 
