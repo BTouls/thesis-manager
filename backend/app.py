@@ -13,7 +13,7 @@ CORS(app)
 
 # Here we initialize database stuff 
 db_connection = MongoClient()
-db = db_connection.get_database("final-project")
+db = db_connection.get_database("thesis-manager")
 db_users = db.get_collection("users")
 db_projects = db.get_collection("projects")
 
