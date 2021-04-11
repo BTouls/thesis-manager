@@ -17,7 +17,6 @@ function CreateProject(){
         university: '',
         school: '',
         department: '',
-        date: '',
         numberOfStudents: '',
         title: '',
         nativeTitle: '',

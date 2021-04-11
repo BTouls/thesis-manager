@@ -1,7 +1,7 @@
 import React from 'react';
-import {Link} from "react-router-dom"
+// import {Link} from "react-router-dom"
 import {Formik, Field, Form} from 'formik'
-import axios from 'axios';
+// import axios from 'axios';
 import Auth from './authenticate';
 
 function Login(){

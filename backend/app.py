@@ -263,7 +263,7 @@ def create_user():
     h.update(os.urandom(32))
     aux = str(h.hexdigest())
     user_new["token"] = aux
-    user_new["password"] = sha256(user_new["password"]).hexdigest()
+    user_new["password"] = sha256(str(user_new["password"]).encode('utf-8')).hexdigest()
 
     db_users.insert_one(user_new)
     return '{"message": "user with id: ' + user_new["id"] + ' created succesfully"}'

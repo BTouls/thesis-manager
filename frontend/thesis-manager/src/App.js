@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom"
-import { useHistory } from "react-router-dom"
+// import { useHistory } from "react-router-dom"
 import Projects from './Projects'
 import Users from './Users'
 import About from './About'
