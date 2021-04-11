@@ -1,6 +1,6 @@
-# final-project 
+# Thesis-manager 
 
-This is an application project as my final thesis in university. 
+This is a project consisting of a python backend and a react javascript front-end implementing a web application for managing thesis topic announcements and assignments on universities.
 
 **Type of application**: web application
 
@@ -10,28 +10,19 @@ Component | Language   | Framework
 ----------|------------|----------
 Backend   | Python     | Flask
 Frontend  | Javascript | React
+Datastore | Javascript interface and Binary JSON format | MongoDB 
 
 
 **Database** : MongoDB
 
-## Usefull Notes
+## Some implementation details
 
 My backend is written in python and uses the flask framework to create an API 
+All data is stored in BSON format in the NoSQL database MongoDB
+Front-end is created with react and uses bootstrap framework for css and ui styling. 
 
-The API listens and responds to `HTTP` requests
-
-[Http Protocol - Wikipedia](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol)
-
-[Http Protocol - Mozilla Notes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview)
-
-
-
-
-_VS code Notes_: To see the markdown result of this page press:  `Ctrl + Shift + V`
-
-
-Application Features
-====================
+Application Roadmap
+===================
 
 Done:
 - User Management
