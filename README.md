@@ -13,11 +13,9 @@ Frontend  | Javascript | React
 Datastore | Javascript interface and Binary JSON format | MongoDB 
 
 
-**Database** : MongoDB
-
 ## Some implementation details
 
-My backend is written in python and uses the flask framework to create an API 
+Apps backend is written in python and uses the flask framework to create a rest-like API 
 All data is stored in BSON format in the NoSQL database MongoDB
 Front-end is created with react and uses bootstrap framework for css and ui styling. 
 
@@ -39,8 +37,20 @@ Done:
  - Login (User/Roles)
 - Other Tasks
  - Apply for project (As a user) - Done in backend
+ - External sign-in with oidc 
+
 
 TODO:
 - Apply for Project (As a user) - TODO in frontend
 - Accept user applications (As a teacher)
 
+# Some Screenshots
+
+## Login screen
+![Login screen](./docs/shot-login.jpg)
+
+## Users List
+![Users List](./docs/shot-users.jpg)
+
+## Project List
+![Projects List](./docs/shot-projects.jpg)
