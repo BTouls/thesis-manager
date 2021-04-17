@@ -68,7 +68,7 @@ cd thesis-manager
 
 - run docker-compose 
 ```
-docker compose up
+docker-compose up
 ```
 
 # Manual Deployment
