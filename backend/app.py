@@ -11,8 +11,13 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
+
+mongodb_host = os.environ['MONGODB_HOST']
+
+
+
 # Here we initialize database stuff 
-db_connection = MongoClient()
+db_connection = MongoClient(host=mongodb_host)
 db = db_connection.get_database("thesis-manager")
 db_users = db.get_collection("users")
 db_projects = db.get_collection("projects")
@@ -42,7 +47,7 @@ def auth():
     auth_details = request.json 
     username = auth_details["username"]
     password = auth_details["password"]
-    password_hash = sha256(password).hexdigest()
+    password_hash = sha256(password.encode("utf-8")).hexdigest()
 
     # Find if a user with that username and that password_hash exists in database
 

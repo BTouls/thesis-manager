@@ -55,7 +55,23 @@ TODO:
 ## Project List
 ![Projects List](./docs/shot-projects.jpg)
 
-# Deployment 
+
+# Deployment through docker
+
+Make sure you have `docker` and `docker-compose` installed in your system
+
+- clone locally and enter project folder
+```
+git clone https://github.com/btouls/thesis-manager
+cd thesis-manager
+```
+
+- run docker-compose 
+```
+docker compose up
+```
+
+# Manual Deployment
 
 The application was developed and tested on the following system/stack:
 
@@ -136,8 +152,7 @@ pip3 install -r requirements.txt
 
 Important: Populate Database with sample and demo data (run init_db script)
 ```
-chmod u+x ./init_db.py
-./init_db.py
+mongo mongo_init.js
 ```
 
 To start the backend in development mode issue:
@@ -185,5 +200,4 @@ The init data are for local testing purposes only and the application to run in 
 - Login as Demo Professor with username:`demoprof` and password: `demoprof`
 - Login as Demo Student with username:`demostudent` and password: `demostudent`
 
-### Soon to come: Docker image
-To make the deployment process more easy 
+ 
